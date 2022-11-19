@@ -8,7 +8,6 @@
 
 import SwiftUI
 import Combine
-import StackNavigationView
 import SoundCloud
 
 struct TrackList<Element: Decodable&Identifiable&Filterable>: View {
@@ -26,8 +25,10 @@ struct TrackList<Element: Decodable&Identifiable&Filterable>: View {
                 let tracks = elements.map(transform)
                 play(tracks, from: idx, on: player)
             }
-
-            return AnyView(StackNavigationLink(destination: TrackDetail(track: track)) {
+            
+            return AnyView(NavigationLink {
+                TrackDetail(track: track)
+            } label: {
                 VStack(alignment: .leading) {
                     TrackRow(track: track, onPlay: onPlay)
                     Divider()

@@ -8,7 +8,6 @@
 
 import SwiftUI
 import Combine
-import StackNavigationView
 import SoundCloud
 
 struct NoTrackError: Error {}
@@ -24,7 +23,9 @@ struct PlayerView: View {
         
         return HStack {
             if let track = player.currentStream {
-                StackNavigationLink(destination: TrackDetail(track: track)) {
+                NavigationLink {
+                    TrackDetail(track: track)
+                } label: {
                     RemoteImage(url: player.currentStream?.artworkURL, cornerRadius: 3)
                         .frame(width: 50, height: 50)
                 }

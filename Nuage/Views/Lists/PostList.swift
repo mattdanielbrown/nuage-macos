@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Combine
-import StackNavigationView
 import SoundCloud
 
 struct PostList: View {
@@ -29,7 +28,9 @@ struct PostList: View {
             let action = post.isRepost ? "reposted" : "posted"
             return AnyView(VStack(alignment: .leading) {
                 HStack(spacing: 10) {
-                    StackNavigationLink(destination: UserDetail(user: post.user)) {
+                    NavigationLink {
+                        UserDetail(user: post.user)
+                    } label: {
                         RemoteImage(url: post.user.avatarURL, cornerRadius: 15)
                             .frame(width: 30, height: 30)
                         Text("\(post.user.username) \(action)")
@@ -39,7 +40,9 @@ struct PostList: View {
                     .frame(height: 18)
 
                 if case let .track(track) = post.item {
-                    StackNavigationLink(destination: TrackDetail(track: track)) {
+                    NavigationLink {
+                        TrackDetail(track: track)
+                    } label: {
                         TrackRow(track: track, onPlay: onPlay)
                     }
                     .trackContextMenu(track: track, onPlay: onPlay)

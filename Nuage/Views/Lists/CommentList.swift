@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Combine
-import StackNavigationView
 import SoundCloud
 
 struct CommentList: View {
@@ -18,8 +17,7 @@ struct CommentList: View {
     
     var body: some View {
         InfiniteList(publisher: publisher) { elements, idx -> AnyView in
-            let element = elements[idx]
-            return AnyView(CommentRow(comment: element))
+            AnyView(CommentRow(comment: elements[idx]))
         }
     }
     

@@ -11,12 +11,62 @@ import Combine
 import AppKit
 import URLImage
 import Introspect
-import StackNavigationView
 import SoundCloud
+
+private enum NavigationDetail {
+    case stream
+    case likes
+    case history
+    case following
+    case playlist(String, String)
+    
+    var title: String {
+        switch self {
+        case .stream: return "Stream"
+        case .likes: return "Likes"
+        case .history: return "History"
+        case .following: return "Following"
+        case let .playlist(name, _): return name
+        }
+    }
+    
+    var imageName: String? {
+        switch self {
+        case .stream: return "bolt.horizontal.fill"
+        case .likes: return "heart.fill"
+        case .history: return "clock.fill"
+        case .following: return "person.2.fill"
+        case .playlist(_, _): return nil
+        }
+    }
+    
+}
+
+extension NavigationDetail: Hashable {
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title.hashValue)
+        if case .playlist(_, let id) = self {
+            hasher.combine(id.hashValue)
+        }
+    }
+    
+}
+
+extension NavigationDetail: Identifiable {
+    
+    var id: String {
+        if case .playlist(_, let id) = self {
+            return id
+        }
+        return title
+    }
+    
+}
 
 struct MainView: View {
     
-    @State private var navigationSelection: Int? = 0
+    @State private var navigationSelection: NavigationDetail = .stream
     @State private var playlists = [Playlist]()
     @State private var searchQuery = ""
     @State private var presentProfile = false
@@ -25,69 +75,23 @@ struct MainView: View {
     @EnvironmentObject private var commands: Commands
     
     var body: some View {
-        let stream = SoundCloud.shared.get(.stream())
-        let streamView = PostList(for: stream).navigationTitle("Stream")
-        
-        let likes = SoundCloud.shared.$user.filter { $0 != nil}
-            .flatMap { SoundCloud.shared.get(.trackLikes(of: $0!)) }
-            .eraseToAnyPublisher()
-        let likesView = TrackList(for: likes).navigationTitle("Likes")
-        
-        let history = SoundCloud.shared.get(.history())
-        let historyView = TrackList(for: history).navigationTitle("History")
-        
-        let following = SoundCloud.shared.$user.filter { $0 != nil }
-            .flatMap { SoundCloud.shared.get(.followings(of: $0!)) }
-            .eraseToAnyPublisher()
-        let followingView = UserGrid(for: following).navigationTitle("Following")
-        
-        return VStack(spacing: 0) {
-//            let presentSearch = Binding(get: { searchQuery.count > 0 },
-//                                        set: { presented in
-//                                            if !presented {
-//                                                searchQuery = ""
-//                                            }
-//                                        })
-            let stackItem: Binding<Int?> = Binding(get: { presentProfile ? 1 : (searchQuery.count > 0 ? 2 : nil) },
-                                                      set: { value in
-                                                        if value == nil {
-                                                            presentProfile = false
-                                                            searchQuery = ""
-                                                        }
-                                                      })
-            
-            StackNavigationView(selection: $navigationSelection) {
-                List {
-                    sidebarNavigationLink(title: "Stream", imageName: "bolt.horizontal.fill", destination: streamView, tag: 0)
-                    Section(header: Text("Library")) {
-                        sidebarNavigationLink(title: "Likes", imageName: "heart.fill", destination: likesView, tag: 1)
-                        sidebarNavigationLink(title: "History", imageName: "clock.fill", destination: historyView, tag: 2)
-                        sidebarNavigationLink(title: "Following", imageName: "person.2.fill", destination: followingView, tag: 3)
-                    }
+        VStack(spacing: 0) {
+            NavigationSplitView {
+                List(selection: $navigationSelection) {
+                    sidebarMenu(for: .stream)
+                    sidebarMenu(for: .likes)
+                    sidebarMenu(for: .history)
+                    sidebarMenu(for: .following)
+                    
                     Section(header: Text("Playlists")) {
-                        ForEach(0..<playlists.count, id: \.self) { idx in
-                            let playlist = playlists[idx]
-                            let ids = SoundCloud.shared.get(.playlist(playlist.id))
-                                .map { $0.trackIDs ?? [] }
-                                .eraseToAnyPublisher()
-                            let slice = { ids in
-                                return SoundCloud.shared.get(.tracks(ids))
-                            }
-
-                            let playlistView = TrackList(for: ids, slice: slice).navigationTitle(playlist.title)
-                            SidebarNavigationLink(playlist.title, destination: playlistView, tag: idx+4, selection: $navigationSelection)
+                        ForEach(playlists, id: \.self) { playlist in
+                            sidebarMenu(for: .playlist(playlist.title, playlist.id))
                         }
                     }
                 }
-                .listStyle(SidebarListStyle())
-            }
-            .stack(item: stackItem) {
-                if presentProfile {
-                    UserDetail(user: SoundCloud.shared.user!)
-                }
-                else {
-                    let search = SoundCloud.shared.get(.search(searchQuery))
-                    SearchList(for: search)
+            } detail: {
+                NavigationStack {
+                    detailView(for: navigationSelection)
                 }
             }
             PlayerView()
@@ -107,18 +111,18 @@ struct MainView: View {
 //
 //                }
 //            }
-            ToolbarItem {
-                Button(action: { presentProfile = true }) {
-                    HStack {
-                        Text(SoundCloud.shared.user?.username ?? "Profile")
-                            .bold()
-                            .foregroundColor(.secondary)
-                        RemoteImage(url: SoundCloud.shared.user?.avatarURL, cornerRadius: 15)
-                            .frame(width: 30, height: 30)
-                    }
-                }
-                .buttonStyle(PlainButtonStyle())
-            }
+//            ToolbarItem {
+//                Button(action: { presentProfile = true }) {
+//                    HStack {
+//                        Text(SoundCloud.shared.user?.username ?? "Profile")
+//                            .bold()
+//                            .foregroundColor(.secondary)
+//                        RemoteImage(url: SoundCloud.shared.user?.avatarURL, cornerRadius: 15)
+//                            .frame(width: 30, height: 30)
+//                    }
+//                }
+//                .buttonStyle(PlainButtonStyle())
+//            }
         }
         .onAppear {            
             SoundCloud.shared.get(.library())
@@ -133,14 +137,45 @@ struct MainView: View {
                 .store(in: &self.subscriptions)
         }
     }
-    
-    @ViewBuilder private func sidebarNavigationLink<V: View>(title: String, imageName: String, destination: V, tag: Int) -> some View {
-        SidebarNavigationLink(destination: destination, tag: tag, selection: $navigationSelection) {
+        
+    @ViewBuilder private func sidebarMenu(for detail: NavigationDetail) -> some View {
+        NavigationLink(value: detail) {
             HStack {
-                Image(systemName: imageName)
-                    .frame(width: 20, alignment: .center)
-                Text(title)
+                if let imageName = detail.imageName {
+                    Image(systemName: imageName)
+                        .frame(width: 20, alignment: .center)
+                }
+                Text(detail.title)
             }
+        }
+    }
+    
+    @ViewBuilder private func detailView(for detail: NavigationDetail) -> some View {
+        switch detail {
+        case .stream:
+            let stream = SoundCloud.shared.get(.stream())
+            PostList(for: stream).navigationTitle(detail.title)
+        case .likes:
+            let likes = SoundCloud.shared.$user.filter { $0 != nil}
+                .flatMap { SoundCloud.shared.get(.trackLikes(of: $0!)) }
+                .eraseToAnyPublisher()
+            TrackList(for: likes).navigationTitle(detail.title)
+        case .history:
+            let history = SoundCloud.shared.get(.history())
+            TrackList(for: history).navigationTitle(detail.title)
+        case .following:
+            let following = SoundCloud.shared.$user.filter { $0 != nil }
+                .flatMap { SoundCloud.shared.get(.followings(of: $0!)) }
+                .eraseToAnyPublisher()
+            UserGrid(for: following).navigationTitle(detail.title)
+        case .playlist(_, let id):
+            let ids = SoundCloud.shared.get(.playlist(id))
+                .map { $0.trackIDs ?? [] }
+                .eraseToAnyPublisher()
+            let slice = { ids in
+                return SoundCloud.shared.get(.tracks(ids))
+            }
+            TrackList(for: ids, slice: slice).navigationTitle(detail.title)
         }
     }
     

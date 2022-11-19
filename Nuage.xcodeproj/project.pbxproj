@@ -10,7 +10,6 @@
 		4908205025C86DD100AC92EC /* PlayerSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4908204F25C86DD100AC92EC /* PlayerSlider.swift */; };
 		492AF079258F877E0079035F /* PostList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492AF078258F877E0079035F /* PostList.swift */; };
 		49328ECF25C4B71500A2A34D /* SoundCloud in Frameworks */ = {isa = PBXBuildFile; productRef = 49328ECE25C4B71500A2A34D /* SoundCloud */; };
-		49328ED125C4B71500A2A34D /* StackNavigationView in Frameworks */ = {isa = PBXBuildFile; productRef = 49328ED025C4B71500A2A34D /* StackNavigationView */; };
 		49332BA525961A260034A161 /* TrackRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49332BA425961A260034A161 /* TrackRow.swift */; };
 		49332BAE25961A3B0034A161 /* PlaylistRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49332BAD25961A3B0034A161 /* PlaylistRow.swift */; };
 		49332BBE2596260A0034A161 /* Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49332BBD2596260A0034A161 /* Actions.swift */; };
@@ -67,7 +66,6 @@
 /* Begin PBXFileReference section */
 		4908204F25C86DD100AC92EC /* PlayerSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerSlider.swift; sourceTree = "<group>"; };
 		492AF078258F877E0079035F /* PostList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostList.swift; sourceTree = "<group>"; };
-		49328EC225C4B6F300A2A34D /* StackNavigationView */ = {isa = PBXFileReference; lastKnownFileType = folder; path = StackNavigationView; sourceTree = "<group>"; };
 		49328EC625C4B6F900A2A34D /* SoundCloud */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SoundCloud; sourceTree = "<group>"; };
 		49332BA425961A260034A161 /* TrackRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackRow.swift; sourceTree = "<group>"; };
 		49332BAD25961A3B0034A161 /* PlaylistRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistRow.swift; sourceTree = "<group>"; };
@@ -114,7 +112,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49328ED125C4B71500A2A34D /* StackNavigationView in Frameworks */,
 				498286F825969AE800147DBE /* Introspect in Frameworks */,
 				49328ECF25C4B71500A2A34D /* SoundCloud in Frameworks */,
 				49B154C525C4685D00CE9511 /* URLImage in Frameworks */,
@@ -183,7 +180,6 @@
 			isa = PBXGroup;
 			children = (
 				49328EC625C4B6F900A2A34D /* SoundCloud */,
-				49328EC225C4B6F300A2A34D /* StackNavigationView */,
 				4969F3C7257CFA7F0048E29B /* Nuage */,
 				4969F3DA257CFA800048E29B /* NuageTests */,
 				4969F3E5257CFA800048E29B /* NuageUITests */,
@@ -297,7 +293,6 @@
 				498286F725969AE800147DBE /* Introspect */,
 				49B154C425C4685D00CE9511 /* URLImage */,
 				49328ECE25C4B71500A2A34D /* SoundCloud */,
-				49328ED025C4B71500A2A34D /* StackNavigationView */,
 				4980FD3F25CD704E004640D5 /* GridStack */,
 			);
 			productName = Nuage;
@@ -347,7 +342,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1220;
-				LastUpgradeCheck = 1230;
+				LastUpgradeCheck = 1410;
 				TargetAttributes = {
 					4969F3C4257CFA7F0048E29B = {
 						CreatedOnToolsVersion = 12.2;
@@ -524,6 +519,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -585,6 +581,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -615,6 +612,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Nuage/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Nuage/Info.plist;
@@ -622,7 +620,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 0.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = ch.laurinbrandner.nuage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -640,6 +638,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Nuage/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Nuage/Info.plist;
@@ -647,7 +646,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 0.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = ch.laurinbrandner.nuage;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -662,6 +661,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				INFOPLIST_FILE = NuageTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -683,6 +683,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				INFOPLIST_FILE = NuageTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -703,6 +704,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				INFOPLIST_FILE = NuageUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -722,6 +724,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				INFOPLIST_FILE = NuageUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -815,10 +818,6 @@
 		49328ECE25C4B71500A2A34D /* SoundCloud */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SoundCloud;
-		};
-		49328ED025C4B71500A2A34D /* StackNavigationView */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = StackNavigationView;
 		};
 		4980FD3F25CD704E004640D5 /* GridStack */ = {
 			isa = XCSwiftPackageProductDependency;
